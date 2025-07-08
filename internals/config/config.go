@@ -45,7 +45,7 @@ func (m *Manager) Save() error {
 		return fmt.Errorf("failed to marshal config: %w", err)
 	}
 
-	if err := os.WriteFile(configPath, data, 0664); err != nil {
+	if err := os.WriteFile(configPath, data, 0644); err != nil {
 		return fmt.Errorf("failed to write config file: %w", err)
 	}
 
@@ -57,14 +57,15 @@ func (m *Manager) Load() error {
 	data, err := os.ReadFile(configPath)
 
 	if err != nil {
+		if os.IsNotExist(err) {
+			return fmt.Errorf("config file not found at: %s", configPath)
+		}
 		return fmt.Errorf("failed to read config file: %w", err)
 	}
 
 	if err := json.Unmarshal(data, &m.config); err != nil {
 		return fmt.Errorf("failed to parse config file: %w", err)
 	}
-
-	fmt.Printf("mi mi mi %v", m.config)
 
 	return nil
 }
@@ -75,4 +76,14 @@ func (m *Manager) GetActiveCharacter() string {
 
 func (m *Manager) SetActiveCharacter(name string) {
 	m.config.ActiveCharacter = name
+}
+
+func (m *Manager) GetConfig() Config {
+	return m.config
+}
+
+func (m *Manager) ConfigExists() bool {
+	configPath := filepath.Join(m.configDir, "config.json")
+	_, err := os.Stat(configPath)
+	return err == nil
 }
