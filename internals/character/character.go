@@ -45,7 +45,7 @@ func (m *Manager) SetLevel(lvl int) {
 func (m *Manager) Save() error {
 	data, err := json.MarshalIndent(m.Character, "", "    ")
 	if err != nil {
-		return fmt.Errorf("failed to marshal config: %w", err)
+		return fmt.Errorf("failed to marshal character file: %w", err)
 	}
 
 	if err := os.WriteFile(m.characterPath(), data, 0644); err != nil {
@@ -60,13 +60,13 @@ func (m *Manager) Load() error {
 
 	if err != nil {
 		if os.IsNotExist(err) {
-			return fmt.Errorf("config file not found at: %s", m.characterPath())
+			return fmt.Errorf("character file not found at: %s", m.characterPath())
 		}
-		return fmt.Errorf("failed to read config file: %w", err)
+		return fmt.Errorf("failed to read character file: %w", err)
 	}
 
 	if err := json.Unmarshal(data, &m.Character); err != nil {
-		return fmt.Errorf("failed to parse config file: %w", err)
+		return fmt.Errorf("failed to parse character file: %w", err)
 	}
 
 	return nil
