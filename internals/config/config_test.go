@@ -9,38 +9,29 @@ import (
 
 func TestNewManager(t *testing.T) {
 	configDir := "/test/config"
-	m := NewManager(configDir)
+	m := New(configDir)
 
 	if m.configDir != configDir {
 		t.Errorf("Expected configDir %q, got %q", configDir, m.configDir)
 	}
 
-	expectedDirs := []string{
-		configDir,
-		filepath.Join(configDir, "characters"),
-	}
-
-	if len(m.config.Dirs) != len(expectedDirs) {
-		t.Errorf("Expected %d dirs, got %d", len(expectedDirs), len(m.config.Dirs))
-	}
-
-	for i, expected := range expectedDirs {
-		if m.config.Dirs[i] != expected {
-			t.Errorf("Expected dir[%d] %q, got %q", i, expected, m.config.Dirs[i])
-		}
-	}
 }
 
 func TestManager_EnsureConfigDir(t *testing.T) {
 	configDir := t.TempDir()
-	m := NewManager(configDir)
+	m := New(configDir)
 
 	err := m.EnsureConfigDir()
 	if err != nil {
 		t.Fatalf("EnsureConfigDir failed %v", err)
 	}
 
-	for _, dir := range m.config.Dirs {
+	expectedDirs := []string{
+		configDir,
+		m.GetCharacterFolder(),
+	}
+
+	for _, dir := range expectedDirs {
 		if _, err := os.Stat(dir); os.IsNotExist(err) {
 			t.Errorf("Directory %q was not created", dir)
 		}
@@ -49,7 +40,7 @@ func TestManager_EnsureConfigDir(t *testing.T) {
 
 func TestManager_SaveAndLoad(t *testing.T) {
 	configDir := t.TempDir()
-	m := NewManager(configDir)
+	m := New(configDir)
 	testCharacter := "TestCharacter"
 	m.SetActiveCharacter(testCharacter)
 	err := m.EnsureConfigDir()
@@ -81,7 +72,7 @@ func TestManager_SaveAndLoad(t *testing.T) {
 		t.Errorf("Expected active character %q, got %q", testCharacter, savedConfig.ActiveCharacter)
 	}
 
-	newManager := NewManager(configDir)
+	newManager := New(configDir)
 	err = newManager.Load()
 	if err != nil {
 		t.Fatalf("Load failed %v", err)
@@ -94,7 +85,7 @@ func TestManager_SaveAndLoad(t *testing.T) {
 
 func TestManager_LoadNonExistentFile(t *testing.T) {
 	configDir := t.TempDir()
-	m := NewManager(configDir)
+	m := New(configDir)
 	err := m.Load()
 	if err == nil {
 		t.Error("Expected error when loading non-existent config file")
@@ -109,7 +100,7 @@ func TestManager_LoadNonExistentFile(t *testing.T) {
 }
 
 func TestManager_GetSetActiveCharacter(t *testing.T) {
-	m := NewManager("/test")
+	m := New("/test")
 	if m.GetActiveCharacter() != "" {
 		t.Errorf("Expected empty active character, got %q", m.GetActiveCharacter())
 	}
@@ -123,7 +114,7 @@ func TestManager_GetSetActiveCharacter(t *testing.T) {
 
 func TestManager_ConfigExists(t *testing.T) {
 	configDir := t.TempDir()
-	m := NewManager(configDir)
+	m := New(configDir)
 
 	if m.ConfigExists() {
 		t.Error("Config should not exists initially")
@@ -138,7 +129,7 @@ func TestManager_ConfigExists(t *testing.T) {
 }
 
 func TestManager_GetConfig(t *testing.T) {
-	m := NewManager("/test")
+	m := New("/test")
 	testCharacter := "TestCharacter"
 	m.SetActiveCharacter(testCharacter)
 

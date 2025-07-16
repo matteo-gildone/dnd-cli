@@ -8,8 +8,7 @@ import (
 )
 
 type Config struct {
-	ActiveCharacter string   `json:"active_character"`
-	Dirs            []string `json:"dirs"`
+	ActiveCharacter string `json:"active_character"`
 }
 
 type Manager struct {
@@ -17,19 +16,18 @@ type Manager struct {
 	config    Config
 }
 
-func NewManager(configDir string) *Manager {
+func New(configDir string) *Manager {
 	return &Manager{
 		configDir: configDir,
-		config: Config{
-			Dirs: []string{
-				configDir,
-				filepath.Join(configDir, "characters")},
-		},
 	}
 }
 
 func (m *Manager) EnsureConfigDir() error {
-	for _, dir := range m.config.Dirs {
+	dirs := []string{
+		m.configDir,
+		m.GetCharacterFolder(),
+	}
+	for _, dir := range dirs {
 		if err := os.MkdirAll(dir, 0755); err != nil {
 			return fmt.Errorf("failed create directory %s: %w", dir, err)
 		}
@@ -72,6 +70,10 @@ func (m *Manager) Load() error {
 
 func (m *Manager) GetActiveCharacter() string {
 	return m.config.ActiveCharacter
+}
+
+func (m *Manager) GetCharacterFolder() string {
+	return filepath.Join(m.configDir, "characters")
 }
 
 func (m *Manager) SetActiveCharacter(name string) {
