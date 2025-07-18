@@ -19,37 +19,22 @@ type App struct {
 func New() (*App, error) {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
+		return nil, fmt.Errorf("failed to get user home directory %w", err)
 	}
 
 	configDir := filepath.Join(homeDir, ".gnd")
 	fmt.Println(configDir)
 
-	configManager := config.New(configDir)
+	configManager, err := config.New(configDir)
 
-	if err := configManager.EnsureConfigDir(); err != nil {
-		fmt.Fprintln(os.Stderr, err)
-		os.Exit(1)
+	if err != nil {
+		return nil, fmt.Errorf("failed to initialise config manager %w", err)
 	}
 
-	if !isConfig(configDir) {
-		fmt.Println("Saving config")
-		if err := configManager.Save(); err != nil {
-			fmt.Fprintln(os.Stderr, err)
-			os.Exit(1)
-		}
-	} else {
-		fmt.Println("Loading config")
-		if err := configManager.Load(); err != nil {
-			fmt.Fprintln(os.Stderr, err)
-			os.Exit(1)
-		}
-		fmt.Println(configManager.GetActiveCharacter())
+	characterManager, err := character.New(configManager)
+	if err != nil {
+		return nil, fmt.Errorf("failed to initialise character manager %w", err)
 	}
-
-	characterManager := character.New(configManager)
-
 	app := &App{
 		configManager:    configManager,
 		characterManager: characterManager,

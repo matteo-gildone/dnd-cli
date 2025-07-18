@@ -9,7 +9,7 @@ import (
 
 func TestNewManager(t *testing.T) {
 	configDir := "/test/config"
-	m := New(configDir)
+	m, _ := New(configDir)
 
 	if m.configDir != configDir {
 		t.Errorf("Expected configDir %q, got %q", configDir, m.configDir)
@@ -19,7 +19,7 @@ func TestNewManager(t *testing.T) {
 
 func TestManager_EnsureConfigDir(t *testing.T) {
 	configDir := t.TempDir()
-	m := New(configDir)
+	m, _ := New(configDir)
 
 	err := m.EnsureConfigDir()
 	if err != nil {
@@ -40,7 +40,7 @@ func TestManager_EnsureConfigDir(t *testing.T) {
 
 func TestManager_SaveAndLoad(t *testing.T) {
 	configDir := t.TempDir()
-	m := New(configDir)
+	m, _ := New(configDir)
 	testCharacter := "TestCharacter"
 	m.SetActiveCharacter(testCharacter)
 	err := m.EnsureConfigDir()
@@ -72,7 +72,7 @@ func TestManager_SaveAndLoad(t *testing.T) {
 		t.Errorf("Expected active character %q, got %q", testCharacter, savedConfig.ActiveCharacter)
 	}
 
-	newManager := New(configDir)
+	newManager, _ := New(configDir)
 	err = newManager.Load()
 	if err != nil {
 		t.Fatalf("Load failed %v", err)
@@ -85,7 +85,7 @@ func TestManager_SaveAndLoad(t *testing.T) {
 
 func TestManager_LoadNonExistentFile(t *testing.T) {
 	configDir := t.TempDir()
-	m := New(configDir)
+	m, _ := New(configDir)
 	err := m.Load()
 	if err == nil {
 		t.Error("Expected error when loading non-existent config file")
@@ -100,7 +100,7 @@ func TestManager_LoadNonExistentFile(t *testing.T) {
 }
 
 func TestManager_GetSetActiveCharacter(t *testing.T) {
-	m := New("/test")
+	m, _ := New("/test")
 	if m.GetActiveCharacter() != "" {
 		t.Errorf("Expected empty active character, got %q", m.GetActiveCharacter())
 	}
@@ -114,7 +114,7 @@ func TestManager_GetSetActiveCharacter(t *testing.T) {
 
 func TestManager_ConfigExists(t *testing.T) {
 	configDir := t.TempDir()
-	m := New(configDir)
+	m, _ := New(configDir)
 
 	if m.ConfigExists() {
 		t.Error("Config should not exists initially")
@@ -129,7 +129,7 @@ func TestManager_ConfigExists(t *testing.T) {
 }
 
 func TestManager_GetConfig(t *testing.T) {
-	m := New("/test")
+	m, _ := New("/test")
 	testCharacter := "TestCharacter"
 	m.SetActiveCharacter(testCharacter)
 

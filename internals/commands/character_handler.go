@@ -35,7 +35,7 @@ func (ch *CharacterHandler) Handle(args []string) error {
 	case "create":
 		createCmd.Parse(os.Args[3:])
 
-		if len(args) < 3 {
+		if len(args) < 2 {
 			return fmt.Errorf("usage: gnd character create <name>")
 		}
 

@@ -16,10 +16,26 @@ type Manager struct {
 	config    Config
 }
 
-func New(configDir string) *Manager {
-	return &Manager{
+func New(configDir string) (*Manager, error) {
+	m := &Manager{
 		configDir: configDir,
 	}
+
+	if err := m.EnsureConfigDir(); err != nil {
+		return nil, fmt.Errorf("failed to ensure config directories %w", err)
+	}
+
+	if m.ConfigExists() {
+		if err := m.Load(); err != nil {
+			return nil, fmt.Errorf("failed to load existing config %w", err)
+		}
+	} else {
+		if err := m.Save(); err != nil {
+			return nil, fmt.Errorf("failed to create new config %w", err)
+		}
+	}
+
+	return m, nil
 }
 
 func (m *Manager) EnsureConfigDir() error {

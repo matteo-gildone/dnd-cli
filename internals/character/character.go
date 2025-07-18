@@ -66,11 +66,23 @@ type Manager struct {
 	Character     *Character
 }
 
-func New(configManager *config.Manager) *Manager {
-	return &Manager{
+func New(configManager *config.Manager) (*Manager, error) {
+	m := &Manager{
 		configManager: configManager,
 		Character:     &Character{Name: configManager.GetActiveCharacter()},
 	}
+
+	if m.CharacterExists() {
+		if err := m.Load(); err != nil {
+			return nil, fmt.Errorf("failed to load current character %w", err)
+		}
+	} else {
+		if err := m.Save(); err != nil {
+			return nil, fmt.Errorf("failed to create new character %w", err)
+		}
+	}
+
+	return m, nil
 }
 
 func (m *Manager) GetCharacter() *Character {
@@ -110,4 +122,10 @@ func (m *Manager) Load() error {
 	}
 
 	return nil
+}
+
+func (m *Manager) CharacterExists() bool {
+	configPath := filepath.Join(m.characterPath())
+	_, err := os.Stat(configPath)
+	return err == nil
 }
