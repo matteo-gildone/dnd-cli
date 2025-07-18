@@ -45,19 +45,23 @@ func main() {
 
 	charManager := character.New(cm)
 	fmt.Println("before:")
-	fmt.Println(charManager.Character)
-	//charManager.SetLevel(3)
+	fmt.Println(charManager.GetCharacter())
+	char := charManager.GetCharacter()
+	char.SetLevel(3)
+	char.SetHardcore(true)
+
 	//
-	//if err := charManager.Save(); err != nil {
-	//	fmt.Fprintln(os.Stderr, err)
-	//	os.Exit(1)
-	//}
+	if err := charManager.Save(); err != nil {
+		fmt.Fprintln(os.Stderr, err)
+		os.Exit(1)
+	}
+
 	if err := charManager.Load(); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
 
 	fmt.Println("after:")
-	fmt.Println(charManager.Character)
+	fmt.Println(charManager.GetCharacter())
 
 }
