@@ -62,14 +62,14 @@ func (c *Character) SetHardcore(h bool) {
 }
 
 type Manager struct {
-	config    *config.Manager
-	Character *Character
+	configManager *config.Manager
+	Character     *Character
 }
 
-func New(config *config.Manager) *Manager {
+func New(configManager *config.Manager) *Manager {
 	return &Manager{
-		config:    config,
-		Character: &Character{Name: config.GetActiveCharacter()},
+		configManager: configManager,
+		Character:     &Character{Name: configManager.GetActiveCharacter()},
 	}
 }
 
@@ -79,7 +79,7 @@ func (m *Manager) GetCharacter() *Character {
 
 func (m *Manager) characterPath() string {
 	characterFile := strings.ToLower(strings.ReplaceAll(m.Character.Name, " ", "_")) + ".json"
-	return filepath.Join(m.config.GetCharacterFolder(), characterFile)
+	return filepath.Join(m.configManager.GetCharacterFolder(), characterFile)
 }
 
 func (m *Manager) Save() error {
