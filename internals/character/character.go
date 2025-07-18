@@ -53,6 +53,10 @@ func (c *Character) SetLevel(lvl int) {
 	c.Level = lvl
 }
 
+func (c *Character) SetXp(xp int) {
+	c.Xp = xp
+}
+
 func (c *Character) SetHardcore(h bool) {
 	c.Hardcore = h
 }
