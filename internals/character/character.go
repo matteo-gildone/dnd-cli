@@ -66,11 +66,17 @@ type Manager struct {
 	Character     *Character
 }
 
-func New(configManager *config.Manager) (*Manager, error) {
+func New(configManager *config.Manager) *Manager {
 	m := &Manager{
 		configManager: configManager,
 		Character:     &Character{Name: configManager.GetActiveCharacter()},
 	}
+
+	return m
+}
+
+func Init(configManager *config.Manager) (*Manager, error) {
+	m := New(configManager)
 
 	if m.CharacterExists() {
 		if err := m.Load(); err != nil {

@@ -16,10 +16,16 @@ type Manager struct {
 	config    Config
 }
 
-func New(configDir string) (*Manager, error) {
+func New(configDir string) *Manager {
 	m := &Manager{
 		configDir: configDir,
 	}
+
+	return m
+}
+
+func Init(configDir string) (*Manager, error) {
+	m := New(configDir)
 
 	if err := m.EnsureConfigDir(); err != nil {
 		return nil, fmt.Errorf("failed to ensure config directories %w", err)

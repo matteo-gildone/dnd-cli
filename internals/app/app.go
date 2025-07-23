@@ -25,13 +25,13 @@ func New() (*App, error) {
 	configDir := filepath.Join(homeDir, ".gnd")
 	fmt.Println(configDir)
 
-	configManager, err := config.New(configDir)
+	configManager, err := config.Init(configDir)
 
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialise config manager %w", err)
 	}
 
-	characterManager, err := character.New(configManager)
+	characterManager, err := character.Init(configManager)
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialise character manager %w", err)
 	}
