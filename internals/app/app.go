@@ -50,12 +50,3 @@ func (a *App) Run(args []string) error {
 func (a *App) GetConfigDir() string {
 	return a.configDir
 }
-
-func isConfig(configDir string) bool {
-	configFile := filepath.Join(configDir, "config.json")
-	if _, err := os.Stat(configFile); os.IsNotExist(err) {
-		return false
-	}
-
-	return true
-}

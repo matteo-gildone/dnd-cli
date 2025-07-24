@@ -31,7 +31,7 @@ func Init(configDir string) (*Manager, error) {
 		return nil, fmt.Errorf("failed to ensure config directories %w", err)
 	}
 
-	if m.ConfigExists() {
+	if m.Exists() {
 		if err := m.Load(); err != nil {
 			return nil, fmt.Errorf("failed to load existing config %w", err)
 		}
@@ -106,7 +106,7 @@ func (m *Manager) GetConfig() Config {
 	return m.config
 }
 
-func (m *Manager) ConfigExists() bool {
+func (m *Manager) Exists() bool {
 	configPath := filepath.Join(m.configDir, "config.json")
 	_, err := os.Stat(configPath)
 	return err == nil

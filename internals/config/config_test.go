@@ -116,14 +116,14 @@ func TestManager_ConfigExists(t *testing.T) {
 	configDir := t.TempDir()
 	m := New(configDir)
 
-	if m.ConfigExists() {
+	if m.Exists() {
 		t.Error("Config should not exists initially")
 	}
 
 	m.EnsureConfigDir()
 	m.Save()
 
-	if !m.ConfigExists() {
+	if !m.Exists() {
 		t.Error("Config should exist after saving")
 	}
 }

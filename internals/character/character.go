@@ -78,7 +78,7 @@ func New(configManager *config.Manager) *Manager {
 func Init(configManager *config.Manager) (*Manager, error) {
 	m := New(configManager)
 
-	if m.CharacterExists() {
+	if m.Exists() {
 		if err := m.Load(); err != nil {
 			return nil, fmt.Errorf("failed to load current character %w", err)
 		}
@@ -130,7 +130,7 @@ func (m *Manager) Load() error {
 	return nil
 }
 
-func (m *Manager) CharacterExists() bool {
+func (m *Manager) Exists() bool {
 	configPath := filepath.Join(m.characterPath())
 	_, err := os.Stat(configPath)
 	return err == nil
